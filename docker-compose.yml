@@ -1,0 +1,40 @@
+# Sarcopenia Detection: Docker Compose.
+#
+# Scoped for now to the Core Backend and its PostgreSQL. The ai-worker (needs the
+# NVIDIA runtime) and web-ui (no Dockerfile yet) will be added as those services
+# are containerised. There is no shared volume between AI Worker and Core
+# Backend; result data is transferred through the UI client.
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: sarcopenia
+      POSTGRES_USER: sarcopenia
+      POSTGRES_PASSWORD: sarcopenia
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sarcopenia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  core-backend:
+    build: ./main-backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/sarcopenia
+      DB_USERNAME: sarcopenia
+      DB_PASSWORD: sarcopenia
+      STORAGE_ROOT: /app/storage
+    volumes:
+      - permanent-data:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+volumes:
+  permanent-data:
+  pg-data:

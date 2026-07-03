@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "pythonfastapiwebapp"
+version = "0.1.0"
+description = "Sarcopenia detection API for engineering license"
+authors = ["Patric Molnar"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110.0"
+uvicorn = {extras = ["standard"], version = "^0.27.0"}
+python-multipart = "^0.0.9" # Required for file uploads
+websockets = "^12.0"
+torch = {version = "2.2.1+cu121", source = "pytorch-gpu-src"} # For CUDA support
+segmentation-models-pytorch = "^0.3.3"
+dicom2nifti = "^2.4.11"
+SimpleITK = "^2.3.1"
+numpy = "^1.26.4"
+matplotlib = "^3.8.3"
+pydicom = "^3.0"
+totalspineseg = "20250416"
+
+[[tool.poetry.source]]
+name = "pytorch-gpu-src"
+url = "https://download.pytorch.org/whl/cu121"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
